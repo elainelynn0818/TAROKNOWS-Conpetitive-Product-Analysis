@@ -40,6 +40,8 @@ body{font-family:'Noto Sans SC',sans-serif;background:var(--white);color:var(--i
 .section-title{font-size:20px;font-weight:700;color:var(--ink);}
 .section-desc{font-size:13px;color:var(--ink2);margin-bottom:20px;line-height:1.7;}
 
+.scroll-hint{display:none;font-size:11px;color:#9CA3AF;text-align:center;margin-bottom:6px;letter-spacing:.04em;}
+
 /* TABLES */
 .table-wrap{overflow-x:auto;border-radius:10px;border:1px solid var(--border);}
 table{width:100%;border-collapse:collapse;}
@@ -118,6 +120,9 @@ tbody tr:last-child td{border-bottom:none;}
   .pain-tags,.pain-opp{grid-column:2;}
   .hero{padding:40px 24px 36px;}
   .container{padding:0 20px 60px;}
+  table td, table th { white-space: nowrap; }
+  .table-wrap { -webkit-overflow-scrolling: touch; }
+  .scroll-hint { display: block; }
 }
 </style>
 </head>
@@ -147,6 +152,7 @@ tbody tr:last-child td{border-bottom:none;}
 <!-- 01 竞品概览 -->
 <div class="section">
   <div class="section-header"><span class="section-num">01</span><span class="section-title">竞品概览</span></div>
+  <p class="scroll-hint">← 左右滑动查看 →</p>
   <div class="table-wrap">
     <table>
       <thead><tr><th>#</th><th>产品名称</th><th>类型</th><th>平台</th><th>上架时间</th><th>下载量</th><th>评分</th></tr></thead>
@@ -247,6 +253,7 @@ tbody tr:last-child td{border-bottom:none;}
   </div>
 
   <!-- 静态对比表 -->
+  <p class="scroll-hint">← 左右滑动查看 →</p>
   <div class="table-wrap">
     <table>
       <thead>
@@ -335,6 +342,7 @@ tbody tr:last-child td{border-bottom:none;}
     <div class="diff-card"><h4>目标用户</h4><p>对塔罗有基础认知、在情感或人生岔路口有真实困惑、愿意向 AI 倾诉、对真人服务有心理门槛的年轻女性用户</p></div>
     <div class="diff-card"><h4>核心机会</h4><p>AI 产品与真人服务之间的空白——既安全又有温度、既随时可得又真正懂你的占卜陪伴</p></div>
   </div>
+  <p class="scroll-hint">← 左右滑动查看 →</p>
   <div class="table-wrap" style="margin-bottom:28px">
     <table>
       <thead><tr><th>功能方向</th><th>竞品现状</th><th>塔知道设计思路</th><th>优先级</th></tr></thead>
