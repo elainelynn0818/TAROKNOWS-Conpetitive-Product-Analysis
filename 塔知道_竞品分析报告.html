@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>塔知道 · 竞品分析报告</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<style>
+:root {
+  --p900:#2E1065; --p800:#3B0764; --p700:#6D28D9; --p600:#7C3AED;
+  --p500:#8B5CF6; --p400:#A78BFA; --p300:#C4B5FD; --p100:#EDE9FE; --p50:#F5F3FF;
+  --ink:#1E1B4B; --ink2:#4B5563; --border:#DDD6FE; --white:#FFFFFF;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Noto Sans SC',sans-serif;background:var(--white);color:var(--ink);font-size:14px;line-height:1.75;}
+
+/* HERO */
+.hero{background:linear-gradient(135deg,var(--p900) 0%,#4C1D95 60%,#5B21B6 100%);padding:64px 40px 52px;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;inset:0;background-image:radial-gradient(circle,rgba(255,255,255,.08) 1px,transparent 1px),radial-gradient(circle,rgba(255,255,255,.05) 1px,transparent 1px);background-size:48px 48px,24px 24px;background-position:0 0,12px 12px;}
+.hero-inner{max-width:860px;margin:0 auto;position:relative;}
+.hero-eyebrow{font-size:12px;font-weight:500;letter-spacing:.12em;color:var(--p300);text-transform:uppercase;margin-bottom:16px;}
+.hero-title{font-size:36px;font-weight:700;color:var(--white);line-height:1.2;margin-bottom:10px;}
+.hero-sub{font-size:15px;color:var(--p300);margin-bottom:32px;}
+.exec-card{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:12px;padding:24px 28px;backdrop-filter:blur(4px);}
+.exec-card h3{font-size:13px;font-weight:500;color:var(--p300);letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px;}
+.exec-card p{color:rgba(255,255,255,.9);font-size:14px;line-height:1.8;margin-bottom:16px;}
+.exec-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:20px;}
+.exec-item{background:rgba(255,255,255,.06);border-radius:8px;padding:12px 14px;border-left:3px solid var(--p500);}
+.exec-item .label{font-size:11px;color:var(--p300);margin-bottom:4px;}
+.exec-item .value{font-size:13px;color:var(--white);line-height:1.5;}
+.core-position{background:rgba(139,92,246,.2);border:1px solid rgba(139,92,246,.4);border-radius:8px;padding:14px 18px;font-size:15px;color:var(--white);font-style:italic;text-align:center;}
+
+/* LAYOUT */
+.container{max-width:860px;margin:0 auto;padding:0 32px 80px;}
+.section{margin-top:56px;}
+.section-header{display:flex;align-items:baseline;gap:12px;border-bottom:2px solid var(--p100);padding-bottom:12px;margin-bottom:28px;}
+.section-num{font-size:12px;font-weight:700;color:var(--p500);letter-spacing:.1em;text-transform:uppercase;background:var(--p100);padding:3px 8px;border-radius:4px;}
+.section-title{font-size:20px;font-weight:700;color:var(--ink);}
+.section-desc{font-size:13px;color:var(--ink2);margin-bottom:20px;line-height:1.7;}
+
+/* TABLES */
+.table-wrap{overflow-x:auto;border-radius:10px;border:1px solid var(--border);}
+table{width:100%;border-collapse:collapse;}
+thead tr{background:var(--p900);}
+thead th{padding:12px 14px;text-align:left;font-size:12px;font-weight:500;color:var(--p300);letter-spacing:.06em;}
+tbody tr:nth-child(even){background:var(--p50);}
+tbody tr:nth-child(odd){background:var(--white);}
+tbody td{padding:11px 14px;font-size:13px;color:var(--ink);border-bottom:1px solid var(--border);vertical-align:top;}
+tbody tr:last-child td{border-bottom:none;}
+.s3{color:var(--p700);font-weight:600;} .s2{color:#A78BFA;} .s1{color:#D1D5DB;} .na{color:#9CA3AF;font-style:italic;}
+
+/* COMP CARDS */
+.comp-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.comp-card{border:1px solid var(--border);border-radius:10px;overflow:hidden;}
+.comp-card-head{background:var(--p900);padding:14px 18px;display:flex;align-items:center;gap:10px;}
+.comp-badge{width:26px;height:26px;border-radius:6px;color:white;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.comp-name{font-size:15px;font-weight:600;color:var(--white);}
+.comp-type{font-size:11px;color:var(--p300);}
+.comp-body{padding:16px 18px;}
+.comp-row{display:flex;gap:8px;margin-bottom:8px;font-size:13px;}
+.comp-row-label{color:var(--p500);font-weight:500;min-width:64px;flex-shrink:0;}
+.comp-row-val{color:var(--ink2);line-height:1.6;}
+.comp-divider{border:none;border-top:1px solid var(--border);margin:12px 0;}
+.comp-insight{background:var(--p50);border-left:3px solid var(--p500);border-radius:0 6px 6px 0;padding:10px 12px;font-size:12px;color:var(--ink);line-height:1.7;}
+.comp-insight strong{color:var(--p700);}
+
+/* CHART CONTAINERS */
+.chart-card{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:24px;margin-bottom:24px;}
+.chart-card h4{font-size:14px;font-weight:600;color:var(--ink);margin-bottom:4px;}
+.chart-card p{font-size:12px;color:var(--ink2);margin-bottom:20px;}
+.chart-wrap{position:relative;}
+
+/* RADAR TOGGLES */
+.radar-toggles{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px;}
+.toggle-btn{padding:6px 14px;border-radius:20px;border:2px solid;font-size:12px;font-weight:500;cursor:pointer;transition:all .2s;background:white;font-family:inherit;}
+.toggle-btn.active{color:white;}
+.toggle-btn:hover{opacity:.85;}
+
+/* PAIN POINTS */
+.pain-list{display:flex;flex-direction:column;gap:10px;}
+.pain-item{display:grid;grid-template-columns:24px 1fr 100px 1fr;gap:12px;align-items:start;padding:12px 16px;border-radius:8px;border:1px solid var(--border);background:var(--white);}
+.pain-num{width:24px;height:24px;border-radius:50%;background:var(--p100);color:var(--p700);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;}
+.pain-main strong{font-size:13px;color:var(--ink);display:block;margin-bottom:2px;}
+.pain-main span{font-size:12px;color:var(--ink2);}
+.pain-tags{display:flex;flex-wrap:wrap;gap:4px;}
+.pain-tag{font-size:11px;padding:2px 7px;border-radius:20px;background:var(--p100);color:var(--p700);}
+.pain-opp{font-size:12px;color:var(--p700);line-height:1.6;}
+
+/* DIFF */
+.diff-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:28px;}
+.diff-card{border-radius:10px;padding:18px 20px;border:1px solid var(--border);}
+.diff-card h4{font-size:13px;font-weight:600;margin-bottom:6px;color:var(--ink);}
+.diff-card p{font-size:13px;color:var(--ink2);line-height:1.7;}
+.p0{background:#F97316;color:white;padding:2px 7px;border-radius:4px;font-size:11px;font-weight:600;}
+.p1{background:var(--p500);color:white;padding:2px 7px;border-radius:4px;font-size:11px;font-weight:600;}
+.p2{background:#9CA3AF;color:white;padding:2px 7px;border-radius:4px;font-size:11px;font-weight:600;}
+.p0-row td{background:#FFF7ED!important;}
+
+/* TAGLINE */
+.tagline-box{background:linear-gradient(135deg,var(--p900),#4C1D95);border-radius:12px;padding:32px 36px;text-align:center;margin:28px 0;}
+.tagline-label{font-size:11px;color:var(--p300);letter-spacing:.1em;text-transform:uppercase;margin-bottom:12px;}
+.tagline-text{font-size:20px;color:var(--white);font-weight:500;line-height:1.6;font-style:italic;}
+
+/* CONCLUSIONS */
+.conclusion-list{display:flex;flex-direction:column;gap:12px;}
+.conclusion-item{display:flex;gap:14px;align-items:flex-start;padding:14px 18px;border-radius:8px;background:var(--p50);border:1px solid var(--border);}
+.c-num{width:28px;height:28px;border-radius:50%;flex-shrink:0;background:var(--p700);color:white;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;}
+.c-text{font-size:13px;color:var(--ink);line-height:1.75;}
+.c-text strong{color:var(--p700);}
+
+.footer{margin-top:60px;padding-top:20px;border-top:1px solid var(--border);text-align:center;font-size:12px;color:#9CA3AF;}
+
+@media(max-width:640px){
+  .comp-grid,.diff-grid,.exec-grid{grid-template-columns:1fr;}
+  .pain-item{grid-template-columns:24px 1fr;}
+  .pain-tags,.pain-opp{grid-column:2;}
+  .hero{padding:40px 24px 36px;}
+  .container{padding:0 20px 60px;}
+}
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-eyebrow">竞品分析报告</div>
+    <div class="hero-title">🔮 塔知道</div>
+    <div class="hero-sub">AI 塔罗陪伴师小程序 · 竞品分析</div>
+    <div class="exec-card">
+      <h3>执行摘要</h3>
+      <p>AI 塔罗市场存在系统性体验天花板——现有产品难以同时做好「解读个性化」与「AI 陪伴感」。用户缺的不是更多功能，而是一个随时可得、不评判、真正在听的占卜伙伴。</p>
+      <div class="exec-grid">
+        <div class="exec-item"><div class="label">AI 产品短板</div><div class="value">解读泛化、无真实陪伴感</div></div>
+        <div class="exec-item"><div class="label">真人服务短板</div><div class="value">门槛高、有审判感、不可得</div></div>
+        <div class="exec-item"><div class="label">共同短板</div><div class="value">免费体验浅、付费墙前置</div></div>
+      </div>
+      <div class="core-position">核心定位：有温度的 AI 塔罗陪伴师<br>「有些话，在这里说刚刚好。」</div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+
+<!-- 01 竞品概览 -->
+<div class="section">
+  <div class="section-header"><span class="section-num">01</span><span class="section-title">竞品概览</span></div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>#</th><th>产品名称</th><th>类型</th><th>平台</th><th>上架时间</th><th>下载量</th><th>评分</th></tr></thead>
+      <tbody>
+        <tr><td>A</td><td><strong>塔塔巫</strong></td><td>直接竞品 · AI 塔罗</td><td>微信小程序 + APP</td><td>2025-03</td><td>52k</td><td>4.9</td></tr>
+        <tr><td>B</td><td><strong>Quin</strong></td><td>直接竞品 · AI 塔罗</td><td>微信小程序 + APP</td><td>2024-05</td><td>3.4M</td><td>4.7</td></tr>
+        <tr><td>C</td><td><strong>月见</strong></td><td>直接竞品 · AI 塔罗</td><td>APP</td><td>2024-07</td><td>243.8k</td><td>4.9</td></tr>
+        <tr><td>D</td><td><strong>准准</strong></td><td>间接竞品 · 真人平台</td><td>APP</td><td>2021-06</td><td>1.2M</td><td>4.8</td></tr>
+        <tr><td>E</td><td><strong>真人塔罗师</strong></td><td>替代性竞品</td><td>小红书 / 微信私域</td><td>—</td><td>—</td><td>—</td></tr>
+        <tr><td>F</td><td><strong>通用 AI</strong></td><td>替代性竞品</td><td>网页 + APP</td><td>—</td><td>—</td><td>—</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+<!-- 02 单品分析 -->
+<div class="section">
+  <div class="section-header"><span class="section-num">02</span><span class="section-title">单品深度分析</span></div>
+  <div class="comp-grid">
+
+    <div class="comp-card">
+      <div class="comp-card-head">
+        <div class="comp-badge" style="background:#8B5CF6">A</div>
+        <div><div class="comp-name">塔塔巫</div><div class="comp-type">AI 塔罗平台 · 微信小程序 + APP</div></div>
+      </div>
+      <div class="comp-body">
+        <div class="comp-row"><span class="comp-row-label">定位</span><span class="comp-row-val">全功能塔罗工具，以「专属感」和陪伴语气做差异化</span></div>
+        <div class="comp-row"><span class="comp-row-label">用户场景</span><span class="comp-row-val">情感 / 职场困惑即时解答、日常运势</span></div>
+        <div class="comp-row"><span class="comp-row-label">商业模式</span><span class="comp-row-val">免费次数 + 周/月/季/年会员 + 社媒裂变领会员</span></div>
+        <div class="comp-row"><span class="comp-row-label">亮点</span><span class="comp-row-val">78 张牌弧形排列 + 震动反馈 + 翻牌动效；自助抽牌模块深度用户留存</span></div>
+        <hr class="comp-divider">
+        <div class="comp-insight"><strong>核心问题：</strong>解读结构固定易模板化；「亲爱的小塔塔」重复称呼破坏沉浸感；UI 偏基础，系统默认字体</div>
+      </div>
+    </div>
+
+    <div class="comp-card">
+      <div class="comp-card-head">
+        <div class="comp-badge" style="background:#EC4899">B</div>
+        <div><div class="comp-name">Quin</div><div class="comp-type">AI 塔罗平台 · 微信小程序 + APP</div></div>
+      </div>
+      <div class="comp-body">
+        <div class="comp-row"><span class="comp-row-label">定位</span><span class="comp-row-val">以视觉设计和情感陪伴为核心差异化的 AI 塔罗产品</span></div>
+        <div class="comp-row"><span class="comp-row-label">用户场景</span><span class="comp-row-val">情感困惑为主，覆盖日常生活场景</span></div>
+        <div class="comp-row"><span class="comp-row-label">商业模式</span><span class="comp-row-val">次数卡 10 元 / 月卡 18.8 元 / 年卡 98 元；付费墙在解读环节</span></div>
+        <div class="comp-row"><span class="comp-row-label">亮点</span><span class="comp-row-val">前置 AI 追问（必须回答才能继续）；水彩风 UI + 文字掉落动画；AI 语音朗读</span></div>
+        <hr class="comp-divider">
+        <div class="comp-insight"><strong>核心问题：</strong>免费次数极少，付费门槛持续收紧；部分用户反映解读模板化严重，质量不稳定</div>
+      </div>
+    </div>
+
+    <div class="comp-card">
+      <div class="comp-card-head">
+        <div class="comp-badge" style="background:#06B6D4">C</div>
+        <div><div class="comp-name">月见</div><div class="comp-type">AI 塔罗 + 星盘平台 · APP</div></div>
+      </div>
+      <div class="comp-body">
+        <div class="comp-row"><span class="comp-row-label">定位</span><span class="comp-row-val">以「月见」虚拟 IP 为核心、塔罗与星盘双线并行的情感陪伴产品</span></div>
+        <div class="comp-row"><span class="comp-row-label">用户场景</span><span class="comp-row-val">情感深度困惑 + 日常情绪记录（日记）+ 星盘解读</span></div>
+        <div class="comp-row"><span class="comp-row-label">商业模式</span><span class="comp-row-val">免费 1 次/日 + 钥匙 6 元/次 + VIP 15/月或 68/年</span></div>
+        <div class="comp-row"><span class="comp-row-label">亮点</span><span class="comp-row-val">月见精灵 IP 贯穿全程；牌背印用户昵称；日记功能提升日常留存</span></div>
+        <hr class="comp-divider">
+        <div class="comp-insight"><strong>核心问题：</strong>先洗牌后提问，AI 无法提前了解语境；解读语气说教感强，与目标用户气质不符</div>
+      </div>
+    </div>
+
+    <div class="comp-card">
+      <div class="comp-card-head">
+        <div class="comp-badge" style="background:#F59E0B">D</div>
+        <div><div class="comp-name">准准</div><div class="comp-type">真人咨询平台 · APP</div></div>
+      </div>
+      <div class="comp-body">
+        <div class="comp-row"><span class="comp-row-label">定位</span><span class="comp-row-val">「情感 + 占卜」垂直赛道的咨询师撮合市场</span></div>
+        <div class="comp-row"><span class="comp-row-label">用户场景</span><span class="comp-row-val">有明确困惑、愿意为「真人答复」付费的用户</span></div>
+        <div class="comp-row"><span class="comp-row-label">商业模式</span><span class="comp-row-val">按次付费（1 位 21 元 / 3 位 48 元 / 5 位 72 元）+ 连麦计时收费</span></div>
+        <div class="comp-row"><span class="comp-row-label">亮点</span><span class="comp-row-val">验证了用户愿意为「真人感」付费；问答广场半公开设计制造好奇心</span></div>
+        <hr class="comp-divider">
+        <div class="comp-insight"><strong>核心问题：</strong>全程诱导消费，解答最后 1/3 推销连麦；无自主抽牌；等待约 20 分钟</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- 03 横向对比矩阵 -->
+<div class="section">
+  <div class="section-header"><span class="section-num">03</span><span class="section-title">横向对比矩阵</span></div>
+
+  <!-- 雷达图 -->
+  <div class="chart-card">
+    <h4>竞品能力雷达图</h4>
+    <p>点击下方按钮切换显示的竞品，对比各产品在六个核心维度上的能力分布</p>
+    <div class="radar-toggles" id="radarToggles"></div>
+    <div class="chart-wrap" style="height:380px;">
+      <canvas id="radarChart"></canvas>
+    </div>
+  </div>
+
+  <!-- 静态对比表 -->
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>维度</th><th>A 塔塔巫</th><th>B Quin</th><th>C 月见</th><th>D 准准</th><th>E 真人</th><th>F 通用AI</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>个性化解读</td><td class="s2">★★☆</td><td class="s3">★★★</td><td class="s2">★★☆</td><td class="s3">★★★</td><td class="s3">★★★</td><td class="s1">★☆☆</td></tr>
+        <tr><td>情感陪伴感</td><td class="s2">★★☆</td><td class="s3">★★★</td><td class="s3">★★★</td><td class="s2">★★☆</td><td class="s3">★★★</td><td class="s1">★☆☆</td></tr>
+        <tr><td>仪式感 / 氛围</td><td class="s2">★★☆</td><td class="s3">★★★</td><td class="s2">★★☆</td><td class="s1">★☆☆</td><td class="s2">★★☆</td><td class="s1">★☆☆</td></tr>
+        <tr><td>追问 / 多轮对话</td><td class="s2">★★☆</td><td class="s3">★★★</td><td class="s2">★★☆</td><td class="s1">★☆☆</td><td class="s3">★★★</td><td class="s3">★★★</td></tr>
+        <tr><td>AI 能力</td><td class="s2">★★☆</td><td class="s3">★★★</td><td class="s2">★★☆</td><td class="na">—</td><td class="na">—</td><td class="s3">★★★</td></tr>
+        <tr><td>视觉品质</td><td class="s2">★★☆</td><td class="s3">★★★</td><td class="s3">★★★</td><td class="s2">★★☆</td><td class="na">—</td><td class="s1">★☆☆</td></tr>
+        <tr><td>可得性 / 便利</td><td class="s3">★★★</td><td class="s3">★★★</td><td class="s3">★★★</td><td class="s2">★★☆</td><td class="s1">★☆☆</td><td class="s3">★★★</td></tr>
+        <tr><td>IP / 角色人格</td><td class="s2">★★☆</td><td class="s1">★☆☆</td><td class="s3">★★★</td><td class="s2">★★☆</td><td class="s3">★★★</td><td class="s1">★☆☆</td></tr>
+        <tr><td>免费体验深度</td><td class="s2">★★☆</td><td class="s2">★★☆</td><td class="s1">★☆☆</td><td class="s1">★☆☆</td><td class="s1">★☆☆</td><td class="s3">★★★</td></tr>
+        <tr><td>价格竞争力</td><td class="s2">★★☆</td><td class="s2">★★☆</td><td class="s2">★★☆</td><td class="s1">★☆☆</td><td class="s1">★☆☆</td><td class="s3">★★★</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- 04 用户核心痛点 -->
+<div class="section">
+  <div class="section-header"><span class="section-num">04</span><span class="section-title">用户核心痛点汇总</span></div>
+
+  <!-- 痛点条形图 -->
+  <div class="chart-card">
+    <h4>痛点严重程度 × 涉及范围</h4>
+    <p>综合用户差评频率与涉及竞品数量评估。点击条形可查看对应「塔知道」应对思路。</p>
+    <div class="chart-wrap" style="height:300px;">
+      <canvas id="painChart"></canvas>
+    </div>
+    <div id="painDetail" style="margin-top:16px;padding:12px 16px;background:var(--p50);border-radius:8px;border-left:3px solid var(--p500);font-size:13px;color:var(--ink);display:none;"></div>
+  </div>
+
+  <div class="pain-list">
+    <div class="pain-item">
+      <div class="pain-num">1</div>
+      <div class="pain-main"><strong>解读泛化</strong><span>套话重复，情感类问题无论怎么问答案几乎一样</span></div>
+      <div class="pain-tags"><span class="pain-tag">塔塔巫</span><span class="pain-tag">Quin</span></div>
+      <div class="pain-opp">前置追问获取真实语境，结合用户具体情境生成解读</div>
+    </div>
+    <div class="pain-item">
+      <div class="pain-num">2</div>
+      <div class="pain-main"><strong>人格气质错位</strong><span>IP 形象可爱但解读语气说教、爹味，与目标用户不符</span></div>
+      <div class="pain-tags"><span class="pain-tag">月见</span></div>
+      <div class="pain-opp">人格设定贯穿每一句措辞，视觉与文案气质统一</div>
+    </div>
+    <div class="pain-item">
+      <div class="pain-num">3</div>
+      <div class="pain-main"><strong>自主抽牌缺失</strong><span>随机分配的牌让用户感到「与自己无关」，代入感断裂</span></div>
+      <div class="pain-tags"><span class="pain-tag">准准</span></div>
+      <div class="pain-opp">保留完整自主选牌流程，强化「这次占卜属于我」的心理认同</div>
+    </div>
+    <div class="pain-item">
+      <div class="pain-num">4</div>
+      <div class="pain-main"><strong>付费门槛高且不透明</strong><span>免费次数极少、充值设计刻意，金额梯度制造消费陷阱</span></div>
+      <div class="pain-tags"><span class="pain-tag">塔塔巫</span><span class="pain-tag">Quin</span><span class="pain-tag">月见</span><span class="pain-tag">准准</span></div>
+      <div class="pain-opp">提供完整免费体验，付费结构简单透明</div>
+    </div>
+    <div class="pain-item">
+      <div class="pain-num">5</div>
+      <div class="pain-main"><strong>全程诱导消费</strong><span>解读内容夹带推销，真诚感受损</span></div>
+      <div class="pain-tags"><span class="pain-tag">准准</span></div>
+      <div class="pain-opp">解读与商业化完全分离，追问设计不与付费挂钩</div>
+    </div>
+    <div class="pain-item">
+      <div class="pain-num">6</div>
+      <div class="pain-main"><strong>与真人沟通有心理门槛</strong><span>害怕被真人塔罗师评判，不敢充分表达</span></div>
+      <div class="pain-tags"><span class="pain-tag">真人塔罗师</span></div>
+      <div class="pain-opp">强调无审判的安全表达空间，作为对真人服务的核心差异点</div>
+    </div>
+    <div class="pain-item">
+      <div class="pain-num">7</div>
+      <div class="pain-main"><strong>免费体验割裂</strong><span>引导完成抽牌后才触发付费墙，体验被强行打断</span></div>
+      <div class="pain-tags"><span class="pain-tag">Quin</span><span class="pain-tag">月见</span></div>
+      <div class="pain-opp">付费墙位置前置告知，不在用户情感投入最深处截断</div>
+    </div>
+  </div>
+</div>
+
+<!-- 05 差异化机会点 -->
+<div class="section">
+  <div class="section-header"><span class="section-num">05</span><span class="section-title">「塔知道」差异化机会点</span></div>
+  <div class="diff-grid">
+    <div class="diff-card"><h4>目标用户</h4><p>对塔罗有基础认知、在情感或人生岔路口有真实困惑、愿意向 AI 倾诉、对真人服务有心理门槛的年轻女性用户</p></div>
+    <div class="diff-card"><h4>核心机会</h4><p>AI 产品与真人服务之间的空白——既安全又有温度、既随时可得又真正懂你的占卜陪伴</p></div>
+  </div>
+  <div class="table-wrap" style="margin-bottom:28px">
+    <table>
+      <thead><tr><th>功能方向</th><th>竞品现状</th><th>塔知道设计思路</th><th>优先级</th></tr></thead>
+      <tbody>
+        <tr class="p0-row"><td>前置追问</td><td>塔塔巫 / 月见无；Quin 有但流程较长</td><td>1～2 个关键问题，轻量建立解读语境</td><td><span class="p0">P0</span></td></tr>
+        <tr class="p0-row"><td>解读个性化</td><td>普遍套话，情感类结果趋同</td><td>结合追问内容和牌面做真实语境解读</td><td><span class="p0">P0</span></td></tr>
+        <tr class="p0-row"><td>AI 人格一致性</td><td>月见 IP 可爱但解读爹味</td><td>人格从系统 Prompt 到每句文案全程贯穿</td><td><span class="p0">P0</span></td></tr>
+        <tr class="p0-row"><td>自主抽牌</td><td>准准无；其他竞品有但仪式感参差</td><td>完整自主选牌流程，强化「属于我」的认同感</td><td><span class="p0">P0</span></td></tr>
+        <tr><td>免费体验深度</td><td>所有竞品免费极少，付费墙前置</td><td>完整单次免费体验，先建信任再付费</td><td><span class="p1">P1</span></td></tr>
+        <tr><td>仪式感设计</td><td>塔塔巫 / Quin 较强；月见 / 准准偏弱</td><td>洗牌动画 + 逐牌翻面 + 氛围音效</td><td><span class="p1">P1</span></td></tr>
+        <tr><td>安全表达空间</td><td>无竞品将此作为显性定位</td><td>文案和交互语气传递「这里没有评判」</td><td><span class="p1">P1</span></td></tr>
+        <tr><td>追问主动性</td><td>塔塔巫被动；Quin 开放但不主动</td><td>AI 解读后主动发起追问，引导用户深入</td><td><span class="p1">P1</span></td></tr>
+        <tr><td>付费结构透明</td><td>普遍存在充值陷阱</td><td>付费结构简单，不在解读中插入商业化引导</td><td><span class="p2">P2</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="tagline-box">
+    <div class="tagline-label">核心体验主张</div>
+    <div class="tagline-text">「有温度的 AI 塔罗师」<br><span style="font-size:16px;opacity:.85">有些话，在这里说刚好。</span></div>
+  </div>
+</div>
+
+<!-- 06 结论 -->
+<div class="section">
+  <div class="section-header"><span class="section-num">06</span><span class="section-title">核心结论</span></div>
+  <div class="conclusion-list">
+    <div class="conclusion-item"><div class="c-num">1</div><div class="c-text"><strong>前置追问是解读质量的关键。</strong>Quin 已验证这一机制的有效性，「塔知道」要在此基础上做得更轻量、更自然，让追问感觉像朋友在关心你而不是 AI 在收集信息。</div></div>
+    <div class="conclusion-item"><div class="c-num">2</div><div class="c-text"><strong>AI 人格一致性是长期留存的基础。</strong>月见的反面教材说明，IP 形象和解读措辞的气质断层会直接破坏用户信任。「塔知道」的人格设定需要从系统 Prompt 到每一句文案全程贯穿。</div></div>
+    <div class="conclusion-item"><div class="c-num">3</div><div class="c-text"><strong>免费体验深度是建立信任的前提。</strong>所有竞品都在免费次数上过度收紧，「塔知道」应提供完整流程的免费体验，让用户先感受到价值再决定是否付费。</div></div>
+    <div class="conclusion-item"><div class="c-num">4</div><div class="c-text"><strong>自主抽牌不可妥协。</strong>跨竞品用户反馈一致指向：自主选牌是用户建立「这次占卜属于我」心理认同的核心机制，去掉它会让整个体验失去重量。</div></div>
+    <div class="conclusion-item"><div class="c-num">5</div><div class="c-text"><strong>「安全表达空间」是对真人服务的最大差异化。</strong>用户害怕被真人评判这一洞察目前无竞品将其转化为显性主张，「塔知道」有机会成为第一个把「无审判陪伴」做成核心定位的 AI 塔罗产品。</div></div>
+  </div>
+</div>
+
+<div class="footer">「塔知道」竞品分析</div>
+</div>
+
+<script>
+// ── 颜色配置 ──
+const COLORS = {
+  A: { border:'#8B5CF6', bg:'rgba(139,92,246,0.15)', label:'A 塔塔巫' },
+  B: { border:'#EC4899', bg:'rgba(236,72,153,0.15)', label:'B Quin' },
+  C: { border:'#06B6D4', bg:'rgba(6,182,212,0.15)',  label:'C 月见' },
+  D: { border:'#F59E0B', bg:'rgba(245,158,11,0.15)', label:'D 准准' }
+};
+
+// ── 2. 雷达图 ──
+const dims = ['个性化解读','情感陪伴感','仪式感','追问对话','IP人格','免费深度'];
+const radarData = {
+  A: [2,2,2,2,2,2],
+  B: [3,3,3,3,1,2],
+  C: [2,3,2,2,3,1],
+  D: [3,2,1,1,2,1]
+};
+
+const radarCtx = document.getElementById('radarChart').getContext('2d');
+const radarChart = new Chart(radarCtx, {
+  type:'radar',
+  data:{
+    labels: dims,
+    datasets: Object.entries(radarData).map(([k,d])=>({
+      label: COLORS[k].label,
+      data: d,
+      backgroundColor: COLORS[k].bg,
+      borderColor: COLORS[k].border,
+      borderWidth: 1.5,
+      borderDash: [],
+      pointBackgroundColor: COLORS[k].border,
+      pointRadius: 4,
+      hidden: false
+    }))
+  },
+  options:{
+    responsive:true, maintainAspectRatio:false,
+    plugins:{ legend:{ position:'bottom', labels:{ font:{size:12}, boxWidth:12, padding:14 }}},
+    scales:{ r:{
+      min:0, max:3,
+      ticks:{ stepSize:1, callback: v=>['','★','★★','★★★'][v], font:{size:11} },
+      pointLabels:{ font:{size:12} },
+      grid:{ color:'rgba(0,0,0,0.06)' }
+    }}
+  }
+});
+
+// 雷达图切换按钮
+const togglesEl = document.getElementById('radarToggles');
+Object.entries(COLORS).forEach(([k,c],i)=>{
+  const btn = document.createElement('button');
+  btn.className='toggle-btn active';
+  btn.textContent = c.label;
+  btn.style.borderColor = c.border;
+  btn.style.color = c.border;
+  btn.onclick = ()=>{
+    const ds = radarChart.data.datasets[i];
+    ds.hidden = !ds.hidden;
+    btn.classList.toggle('active', !ds.hidden);
+    if(!ds.hidden){ btn.style.background='white'; btn.style.color=c.border; }
+    else { btn.style.background=c.border; btn.style.color='white'; }
+    radarChart.update();
+  };
+  togglesEl.appendChild(btn);
+});
+
+// ── 3. 痛点条形图 ──
+const painLabels = ['付费门槛高','解读泛化','全程诱导消费','免费体验割裂','人格气质错位','与真人沟通门槛','自主抽牌缺失','首页信息过载','AI能力不稳定','技术稳定性差'];
+const painScores = [3.0, 2.8, 2.6, 2.4, 2.2, 2.0, 2.0, 1.8, 1.8, 1.5];
+const painOpp = [
+  '提供完整免费体验，付费结构简单透明',
+  '前置追问获取真实语境，结合用户具体情境生成解读',
+  '解读与商业化完全分离，追问设计不与付费挂钩',
+  '付费墙位置前置告知，不在用户情感投入最深处截断',
+  '人格设定贯穿每一句措辞，视觉与文案气质统一',
+  '强调无审判的安全表达空间，作为对真人服务的核心差异点',
+  '保留完整自主选牌流程，强化「这次占卜属于我」的心理认同',
+  '首页聚焦单一核心入口，降低用户决策成本',
+  '稳定的系统 Prompt 设计，保证解读质量下限',
+  '基础体验稳定性是底线，先于功能迭代保障'
+];
+
+const painCtx = document.getElementById('painChart').getContext('2d');
+const painChart = new Chart(painCtx, {
+  type:'bar',
+  data:{
+    labels: painLabels,
+    datasets:[{
+      label:'严重程度',
+      data: painScores,
+      backgroundColor: painScores.map(s=>s>=2.8?'rgba(139,92,246,0.85)':s>=2.4?'rgba(139,92,246,0.65)':'rgba(139,92,246,0.4)'),
+      borderColor: '#6D28D9',
+      borderWidth:1,
+      borderRadius:4
+    }]
+  },
+  options:{
+    indexAxis:'y',
+    responsive:true, maintainAspectRatio:false,
+    plugins:{
+      legend:{ display:false },
+      tooltip:{ callbacks:{ label: ctx=>' 严重程度：'+['','低','中低','中','中高','高'][Math.round(ctx.parsed.x*2)] }}
+    },
+    scales:{
+      x:{ min:0, max:3.2, ticks:{ callback:v=>['','低','中','高',''][Math.round(v)], stepSize:1 }, grid:{ color:'rgba(0,0,0,0.05)' }},
+      y:{ ticks:{ font:{size:12} }, grid:{ display:false }}
+    },
+    onClick:(e,els)=>{
+      const detail = document.getElementById('painDetail');
+      if(els.length){
+        const i = els[0].index;
+        detail.style.display='block';
+        detail.innerHTML=`<strong>「塔知道」应对思路：</strong>${painOpp[i]}`;
+      } else { detail.style.display='none'; }
+    }
+  }
+});
+</script>
+</body>
+</html>
